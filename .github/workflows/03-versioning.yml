@@ -3,7 +3,7 @@ name: "03 - Автоматическое обновление версии"
 on:
   pull_request:
     branches: [main, master]
-    types: [closed]
+    # types: [closed]
 
 permissions:
   contents: write
