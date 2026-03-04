@@ -1,9 +1,8 @@
 name: "05 - Публикация в Docker Hub"
 
 on:
-  pull_request:
+  push:
     branches: [main, master]
-    types: [closed]
 
 permissions:
   contents: write
@@ -14,7 +13,6 @@ jobs:
   docker-build-push:
     name: "Build and Push Docker Image"
     runs-on: ubuntu-latest
-    if: github.event.pull_request.merged == true
     outputs:
       version: ${{ steps.get_version.outputs.version }}
       image_name: ${{ env.IMAGE_NAME }}
