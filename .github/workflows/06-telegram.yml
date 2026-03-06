@@ -30,8 +30,8 @@ jobs:
           fi
           echo "version=$VERSION" >> $GITHUB_OUTPUT
 
-      - name: Download changelog artifact
-        uses: dawidd6/action-download-artifact@v3
+      - name: Download changelog artifacts
+        uses: dawidd6/action-download-artifact@v16
         with:
           workflow: 04-changelog.yml
           name: changelog
