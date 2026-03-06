@@ -10,7 +10,7 @@ class SimpleHandler(BaseHTTPRequestHandler):
         if self.path == '/health':
             response = {'status': 'healthy', 'version': '1.0.0'}
         else:
-            response = {'message': 'Hello from CI/CD project!'}
+            response = {'message': 'Hello'}
         
         self.wfile.write(json.dumps(response).encode())
 
