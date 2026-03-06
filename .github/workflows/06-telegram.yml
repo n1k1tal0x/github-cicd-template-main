@@ -16,7 +16,7 @@ jobs:
     name: "Send to Telegram"
     runs-on: ubuntu-latest
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -31,13 +31,19 @@ jobs:
           fi
           echo "version=$VERSION" >> $GITHUB_OUTPUT
 
-      - name: Download changelog artifacts
-        uses: dawidd6/action-download-artifact@master
+      - name: Set image name
+        run: echo "IMAGE_NAME=${{ secrets.DOCKERHUB_USERNAME }}/${{ github.event.repository.name }}" >> $GITHUB_ENV
+
+      - name: Download changelog artifact from workflow 05 run
+        uses: dawidd6/action-download-artifact@v3
         with:
-          workflow: 04-changelog.yml
           name: changelog
           path: ./artifacts
           run_id: ${{ github.event.workflow_run.id }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Debug downloaded files
+        run: ls -R ./artifacts || true
 
       - name: Send to Telegram
         uses: appleboy/telegram-action@master
@@ -47,6 +53,7 @@ jobs:
           message: |
             🎉 Новый релиз v${{ steps.get_version.outputs.version }}!
             📦 Проект: ${{ github.repository }}
+            🐳 Docker: ${{ env.IMAGE_NAME }}:v${{ steps.get_version.outputs.version }}
             🔗 https://github.com/${{ github.repository }}/actions/runs/${{ github.event.workflow_run.id }}
-          document: artifacts/changelog.md
+          document: ./artifacts/changelog.md
           format: markdown
