@@ -77,8 +77,20 @@ jobs:
           git config --global user.email 'actions@github.com'
           git add changelog.md
           git commit -m "docs: update changelog for v${{ steps.get_version.outputs.version }}" || echo "No changes"
-          git pull --rebase origin ${{ github.event.pull_request.base.ref }}
-          git push
+          for attempt in 1 2 3; do
+            git fetch origin ${{ github.event.pull_request.base.ref }}
+            git rebase origin/${{ github.event.pull_request.base.ref }} && \
+            git push origin HEAD:${{ github.event.pull_request.base.ref }} && \
+            break
+
+            if [ "$attempt" -eq 3 ]; then
+              echo "Push failed after $attempt attempts"
+              exit 1
+            fi
+
+            git rebase --abort || true
+            sleep 2
+          done
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
