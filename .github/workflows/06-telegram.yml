@@ -4,7 +4,6 @@ on:
   workflow_run:
     workflows: ["05 - Публикация в Docker Hub"]
     types: [completed]
-    branches: [main, master]
 
 permissions:
   contents: read
@@ -19,6 +18,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
 
       - name: Get version
         id: get_version
@@ -34,9 +35,10 @@ jobs:
         uses: dawidd6/action-download-artifact@v3
         with:
           workflow: 04-changelog.yml
+          commit: ${{ github.event.workflow_run.head_sha }}
+          workflow_conclusion: success
           name: changelog
           path: ./artifacts
-          run_id: ${{ github.event.workflow_run.id }}
 
       - name: Send to Telegram
         uses: appleboy/telegram-action@master

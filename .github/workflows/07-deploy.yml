@@ -4,7 +4,6 @@ on:
   workflow_run:
     workflows: ["06 - Уведомление в Telegram"]
     types: [completed]
-    branches: [main, master]
 
 permissions:
   contents: write

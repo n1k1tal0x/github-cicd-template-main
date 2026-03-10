@@ -4,7 +4,6 @@ on:
   workflow_run:
     workflows: ["07 - Деплой в PROD"]
     types: [completed]
-    branches: [main, master]
 
 permissions:
   contents: write
